@@ -351,19 +351,19 @@ def remove_product(order_id, product_id):
     else:#order or product does not exist
         return jsonify({"Message": "Invalid order id or product id."}), 400
     
-    # Get all orders for a user
-
+    # Get all orders for a customer
 @app.route('/orders/customer/<int:customer_id>', methods=['GET'])
 def get_orders_by_customer_id(customer_id):
-    orders = db.session.query(Orders).filter(Orders.customer_id == customer_id).all()
-    return orders_schema.jsonify(orders)
+    customer = db.session.get(Customer, customer_id)
+    print("customer", customer)
+    print("customer orders", customer.orders)
+    return order_schema.jsonify(customer.orders), 200
 
 # Get all products for an order
 @app.route('/orders/<int:order_id>/products', methods=['GET'])
 def get_products_for_order(order_id):
-    orders = db.session.query(Products).filter(Products.order_id == order_id).all()
-    return orders_schema.jsonify(orders)
+    orders = db.session.get(Orders, order_id)
+    return orders_schema.jsonify(orders.products), 200
 
 if __name__ == '__main__':
     app.run(debug=True)    
-    
